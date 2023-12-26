@@ -96,3 +96,41 @@ exports.signin = (req, res) => {
             }
         });
 };
+
+exports.getUser = (req, res) => {
+    let token = req.headers["x-access-token"];
+    let userId;
+
+    if (!token) {
+        return response.status(403).send({ message: "No token provided!" });
+    }
+
+    try {
+        let decodedToken = jwt.verify(token, config.secret);
+        userId = decodedToken.id;
+    }
+    catch(error) {
+        return response.status(401).send({
+            message: "Unauthorized!",
+        });
+    }
+
+    if(userId) {
+        User.findById(userId).then(result => {
+            console.log(result);
+
+            if(!result) {
+                return res.status(404).send({ message: "User Not found." });
+            }
+
+            res.status(200).send({
+                id: result._id,
+                username: result.username,
+                email: result.email,
+                firstName: result.firstName,
+                lastName: result.lastName,
+                name: result.name
+            });
+        });
+    }
+}
