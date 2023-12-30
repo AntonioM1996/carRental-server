@@ -134,3 +134,10 @@ exports.getUser = (req, res) => {
         });
     }
 }
+
+exports.googleSignIn = (req, res) => {
+    const client = new OAuth2Client(process.env.CLIENT_ID);
+    const { authId } = req.body;
+
+    // TODO
+}
