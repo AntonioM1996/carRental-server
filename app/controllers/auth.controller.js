@@ -1,10 +1,12 @@
 const config = require("../config/auth.config");
 const db = require("../models");
+const { OAuth2Client } = require('google-auth-library');
 const User = db.user;
 const Role = db.role;
 
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
+const keys = require("../config/client_secret_929370134314-j43cianv66ff0kl77cqn31oiogi1ebdi.apps.googleusercontent.com.json");
 
 exports.signup = (req, res) => {
     const user = new User({
@@ -136,8 +138,24 @@ exports.getUser = (req, res) => {
 }
 
 exports.googleSignIn = (req, res) => {
-    const client = new OAuth2Client(process.env.CLIENT_ID);
-    const { authId } = req.body;
+    console.log("googleSignIn...");
+    const client = new OAuth2Client(keys.web.client_id);
+    const googleIdToken = req.body.idToken;
 
-    // TODO
+    if(googleIdToken && client) {
+        client.verifyIdToken({
+            idToken: googleIdToken,
+            audience: config.carRentalClientId
+        }).then(loginTicket => {
+            // TODO verify if user is present: creation if not present, update if present + return of access_token&refresh_token
+        }).catch(error => {
+            console.error("ERROR", error);
+            console.log(error);
+            res.status(500).send({ message: error });
+            return;
+        });
+    }
+    else {
+        res.status(400).send("No idToken provided.");
+    }
 }
