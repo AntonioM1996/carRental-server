@@ -87,6 +87,9 @@ exports.signin = (req, res) => {
                 username: user.username,
                 email: user.email,
                 roles: authorities,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                name: user.name,
                 accessToken: accessToken,
                 refreshToken: refreshToken
             });
@@ -178,6 +181,9 @@ exports.googleSignIn = (req, res) => {
                         username: user.username,
                         email: user.email,
                         roles: authorities,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        name: user.name,
                         accessToken: accessToken,
                         refreshToken: refreshToken
                     });
@@ -221,6 +227,9 @@ exports.googleSignIn = (req, res) => {
                                             username: user.username,
                                             email: user.email,
                                             roles: authorities,
+                                            firstName: user.firstName,
+                                            lastName: user.lastName,
+                                            name: user.name,
                                             accessToken: accessToken,
                                             refreshToken: refreshToken
                                         });
@@ -250,6 +259,9 @@ exports.googleSignIn = (req, res) => {
                                         username: user.username,
                                         email: user.email,
                                         roles: authorities,
+                                        firstName: user.firstName,
+                                        lastName: user.lastName,
+                                        name: user.name,
                                         accessToken: accessToken,
                                         refreshToken: refreshToken
                                     });
