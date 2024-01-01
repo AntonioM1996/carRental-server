@@ -20,6 +20,6 @@ module.exports = function (app) {
     );
 
     app.post("/api/auth/signin", controller.signin);
-    app.post("/api/auth/googleSignIn", controller.googleSignIn);
+    app.post("/api/auth/google", controller.googleSignIn);
     app.get("/api/auth/user", [authJwt.verifyToken], controller.getUser);
 };
