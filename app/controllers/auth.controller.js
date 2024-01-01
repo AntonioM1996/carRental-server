@@ -147,7 +147,118 @@ exports.googleSignIn = (req, res) => {
             idToken: googleIdToken,
             audience: config.carRentalClientId
         }).then(loginTicket => {
-            // TODO verify if user is present: creation if not present, update if present + return of access_token&refresh_token
+            const ticketPayload = loginTicket.getPayload();
+
+            User.findOne({
+                googleId: ticketPayload.sub
+            }).populate("roles", "-__v").then(user => {
+                if(user) {
+                    // TODO search for email: searching only for googleId, I'll end up with two users with same username if he's 
+                    // already locally registered
+                    // TODO update User data from Google idToken?
+
+                    const accessToken = jwt.sign({ id: user._id },
+                        config.secret,
+                        {
+                            algorithm: 'HS256',
+                            allowInsecureKeySizes: true,
+                            expiresIn: 86400, // 24 hours
+                        }
+                    );
+        
+                    const refreshToken = jwt.sign({ id: user._id }, config.secret); // no expiration
+        
+                    var authorities = [];
+        
+                    for (let i = 0; i < user.roles.length; i++) {
+                        authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
+                    }
+                    res.status(200).send({
+                        id: user._id,
+                        username: user.username,
+                        email: user.email,
+                        roles: authorities,
+                        accessToken: accessToken,
+                        refreshToken: refreshToken
+                    });
+                }
+                else {
+                    const user = new User({
+                        username: ticketPayload.email,
+                        email: ticketPayload.email,
+                        firstName: ticketPayload.given_name,
+                        lastName: ticketPayload.family_name,
+                        googleId: ticketPayload.sub
+                    });
+                
+                    user.save().then(user => {
+                        if (req.body.roles) {
+                            Role.find(
+                                {
+                                    name: { $in: req.body.roles }
+                                }
+                                .then(roles => {
+                                    user.roles = roles.map(role => role._id);
+                                    user.save().then(result => {
+                                        const accessToken = jwt.sign({ id: user._id },
+                                            config.secret,
+                                            {
+                                                algorithm: 'HS256',
+                                                allowInsecureKeySizes: true,
+                                                expiresIn: 86400, // 24 hours
+                                            }
+                                        );
+                            
+                                        const refreshToken = jwt.sign({ id: result._id }, config.secret); // no expiration
+                            
+                                        var authorities = [];
+                            
+                                        for (let i = 0; i < roles.length; i++) {
+                                            authorities.push("ROLE_" + roles[i].name.toUpperCase());
+                                        }
+                                        res.status(200).send({
+                                            id: user._id,
+                                            username: user.username,
+                                            email: user.email,
+                                            roles: authorities,
+                                            accessToken: accessToken,
+                                            refreshToken: refreshToken
+                                        });
+                                    });
+                                })
+                            );
+                        } 
+                        else {
+                            Role.findOne({ name: "user" }).then(role => {
+                                user.roles = [role._id];
+                                user.save().then(result => {
+                                    const accessToken = jwt.sign({ id: user._id },
+                                        config.secret,
+                                        {
+                                            algorithm: 'HS256',
+                                            allowInsecureKeySizes: true,
+                                            expiresIn: 86400, // 24 hours
+                                        }
+                                    );
+                        
+                                    const refreshToken = jwt.sign({ id: result._id }, config.secret); // no expiration
+                        
+                                    var authorities = ["ROLE_USER"];
+                                        
+                                    res.status(200).send({
+                                        id: user._id,
+                                        username: user.username,
+                                        email: user.email,
+                                        roles: authorities,
+                                        accessToken: accessToken,
+                                        refreshToken: refreshToken
+                                    });
+                                });
+                            });
+                        }
+                    });
+                }
+            })
         }).catch(error => {
             console.error("ERROR", error);
             console.log(error);

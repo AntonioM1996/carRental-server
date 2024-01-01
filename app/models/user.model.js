@@ -24,7 +24,8 @@ const User = mongoose.model(
             type: Date,
             default: Date.now,
             immutable: true
-        }
+        },
+        googleId: String
     })
 );
 
