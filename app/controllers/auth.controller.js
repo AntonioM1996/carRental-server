@@ -71,7 +71,7 @@ exports.signin = (req, res) => {
                 {
                     algorithm: 'HS256',
                     allowInsecureKeySizes: true,
-                    expiresIn: 86400, // 24 hours
+                    expiresIn: config.accessTokenDuration, // 24 hours
                 }
             );
 
@@ -165,7 +165,7 @@ exports.googleSignIn = (req, res) => {
                         {
                             algorithm: 'HS256',
                             allowInsecureKeySizes: true,
-                            expiresIn: 86400, // 24 hours
+                            expiresIn: config.accessTokenDuration, // 24 hours
                         }
                     );
         
@@ -211,7 +211,7 @@ exports.googleSignIn = (req, res) => {
                                             {
                                                 algorithm: 'HS256',
                                                 allowInsecureKeySizes: true,
-                                                expiresIn: 86400, // 24 hours
+                                                expiresIn: config.accessTokenDuration, // 24 hours
                                             }
                                         );
                             
@@ -246,7 +246,7 @@ exports.googleSignIn = (req, res) => {
                                         {
                                             algorithm: 'HS256',
                                             allowInsecureKeySizes: true,
-                                            expiresIn: 86400, // 24 hours
+                                            expiresIn: config.accessTokenDuration, // 24 hours
                                         }
                                     );
                         
