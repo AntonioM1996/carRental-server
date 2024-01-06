@@ -20,7 +20,7 @@ const User = mongoose.model(
                 return this.firstName + ' ' + this.lastName
             }
         },
-        timestamp: {
+        createdDate: {
             type: Date,
             default: Date.now,
             immutable: true

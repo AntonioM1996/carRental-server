@@ -19,6 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 require('./app/routes/auth.routes')(app);
+require('./app/routes/note.routes')(app);
 
 function initial() {
     Role.estimatedDocumentCount().then(result => {

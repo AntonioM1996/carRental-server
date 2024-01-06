@@ -4,7 +4,7 @@ const Role = mongoose.model(
     "Role",
     new mongoose.Schema({
         name: String,
-        timestamp: {
+        createdDate: {
             type: Date,
             default: Date.now,
             immutable: true
