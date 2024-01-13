@@ -12,4 +12,5 @@ module.exports = function (app) {
 
     app.post("/api/note", [authJwt.verifyToken], controller.createNote);
     app.get("/api/note", [authJwt.verifyToken], controller.getNotes);
+    app.delete("/api/note/:id?", [authJwt.verifyToken], controller.deleteNote);
 };

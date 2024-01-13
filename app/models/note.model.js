@@ -13,7 +13,8 @@ const Note = mongoose.model(
             type: Date,
             default: Date.now,
             immutable: true
-        }
+        },
+        localCreatedDate: Date
     })
 );
 

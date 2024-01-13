@@ -27,7 +27,8 @@ exports.createNote = (req, res) => {
         const note = new Note({
             user: req.body.user,
             localId: req.body.localId,
-            body: req.body.body
+            body: req.body.body,
+            localCreatedDate: req.body.localCreatedDate
         });
 
         note.save().then(result => {
@@ -76,3 +77,57 @@ exports.getNotes = (req, res) => {
         });
     }
 };
+
+exports.deleteNote = (req, res) => {
+    let token = req.headers["x-access-token"];
+    let userId;
+
+    if (!token) {
+        return res.status(403).send({ message: "No token provided!" });
+    }
+
+    try {
+        let decodedToken = jwt.verify(token, config.secret);
+        userId = decodedToken.id;
+    }
+    catch(error) {
+        console.error("FAILED TO VERIFY TOKEN");
+
+        return res.status(401).send({
+            message: "Unauthorized!",
+        });
+    }
+
+    if(req.params.id) {
+        Note.findById(req.params.id).then(result => {
+            if(result) {
+                if(result.user == userId) {
+                    Note.findByIdAndDelete(result._id).then(result => {
+                        if(result) {
+                            res.status(200).send(result);
+                        }
+                    });
+                }
+                else {
+                    return res.status(401).send({
+                        message: "Unauthorized!",
+                    });
+                }
+            }
+        })
+    }
+    else if(req.query.user && req.query.user == userId) {
+        Note.deleteMany({
+            user: userId
+        }).then(result => {
+            if(result) {
+                res.status(200).send(result);
+            }
+        });
+    }
+    else {
+        return res.status(401).send({
+            message: "Unauthorized!",
+        });
+    }
+}
