@@ -22,4 +22,5 @@ module.exports = function (app) {
     app.post("/api/auth/signin", controller.signin);
     app.post("/api/auth/google", controller.googleSignIn);
     app.get("/api/auth/user", [authJwt.verifyToken], controller.getUser);
+    app.post("/api/auth/refreshtoken", controller.refreshToken);
 };

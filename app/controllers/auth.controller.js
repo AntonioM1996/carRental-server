@@ -286,3 +286,43 @@ exports.googleSignIn = (req, res) => {
         res.status(400).send("No idToken provided.");
     }
 }
+
+exports.refreshToken = (req, res) => {
+    const refreshToken = req.body.refreshToken;
+    let userId;
+
+    if(!refreshToken) {
+        return res.status(403).send({ message: "No refreshToken provided" });
+    }
+    else {
+        try {
+            let decodedToken = jwt.verify(refreshToken, config.secret);
+            userId = decodedToken.id;
+        }
+        catch(error) {
+            return res.status(401).send({
+                message: "Unauthorized!",
+            });
+        }
+
+        if(userId) {
+            // TODO SHOULD ROTATE REFRESH TOKENS (DESTROY THE OLD ONE)
+
+            const accessToken = jwt.sign({ id: userId },
+                config.secret,
+                {
+                    algorithm: 'HS256',
+                    allowInsecureKeySizes: true,
+                    expiresIn: config.accessTokenDuration, // 24 hours
+                }
+            );
+
+            const refreshToken = jwt.sign({ id: userId }, config.secret); // no expiration
+
+            return res.status(200).send({
+                accessToken: accessToken,
+                refreshToken: refreshToken
+            });
+        }
+    }
+}
