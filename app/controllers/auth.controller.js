@@ -71,7 +71,7 @@ exports.signin = (req, res) => {
                 {
                     algorithm: 'HS256',
                     allowInsecureKeySizes: true,
-                    expiresIn: config.accessTokenDuration, // 24 hours
+                    expiresIn: config.accessTokenDuration,
                 }
             );
 
@@ -165,7 +165,7 @@ exports.googleSignIn = (req, res) => {
                         {
                             algorithm: 'HS256',
                             allowInsecureKeySizes: true,
-                            expiresIn: config.accessTokenDuration, // 24 hours
+                            expiresIn: config.accessTokenDuration, 
                         }
                     );
         
@@ -213,7 +213,7 @@ exports.googleSignIn = (req, res) => {
                                             {
                                                 algorithm: 'HS256',
                                                 allowInsecureKeySizes: true,
-                                                expiresIn: config.accessTokenDuration, // 24 hours
+                                                expiresIn: config.accessTokenDuration, 
                                             }
                                         );
                             
@@ -249,7 +249,7 @@ exports.googleSignIn = (req, res) => {
                                         {
                                             algorithm: 'HS256',
                                             allowInsecureKeySizes: true,
-                                            expiresIn: config.accessTokenDuration, // 24 hours
+                                            expiresIn: config.accessTokenDuration,
                                         }
                                     );
                         
@@ -313,7 +313,7 @@ exports.refreshToken = (req, res) => {
                 {
                     algorithm: 'HS256',
                     allowInsecureKeySizes: true,
-                    expiresIn: config.accessTokenDuration, // 24 hours
+                    expiresIn: config.accessTokenDuration,
                 }
             );
 
